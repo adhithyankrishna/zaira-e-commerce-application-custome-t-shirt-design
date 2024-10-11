@@ -1,0 +1,23 @@
+{
+  "name": "zaira",
+  "version": "1.0.0",
+  "description": "A e - commerce application for t short campany with support of custome t shirt",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "e",
+    "commerce",
+    "application"
+  ],
+  "author": "adithyan m",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "express.js": "^1.0.0",
+    "mongoose": "^8.7.1",
+    "zaira": "file:"
+  }
+}
