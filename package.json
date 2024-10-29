@@ -15,9 +15,18 @@
   "author": "adithyan m",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
     "express.js": "^1.0.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.1",
+    "multer": "^1.4.5-lts.1",
+    "validate-image-type": "^3.0.0",
     "zaira": "file:"
   }
 }
