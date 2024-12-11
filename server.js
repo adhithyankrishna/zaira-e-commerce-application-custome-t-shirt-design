@@ -7,6 +7,7 @@ const session = require("express-session");
 const addProduct = require("./routes/addProduct");
 const search = require("./routes/search");
 const app = express();
+const getProduct = require("./routes/getProduct");
 app.use(express.json());
 
 // Configure session
@@ -26,6 +27,7 @@ connectDB(process.env.MONGO_URI);
 app.use(path, user);
 app.use(path,addProduct);
 app.use(path,search);
+app.use(path,getProduct);
 
 app.listen(8080, () => {
   console.log(`Server is listening on port 8080`);
