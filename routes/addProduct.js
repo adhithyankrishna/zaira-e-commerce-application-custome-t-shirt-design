@@ -1,11 +1,13 @@
 const express = require("express");
 const addProduct = express.Router();
-const adminGurd = require("../middleware/adminGurd");
-const authGurd = require("../middleware/authGurd");
+const adminGurd = require("../middleware/adminGurd.middlewarre");
+const authGurd = require("../middleware/authGurd.middleware");
 const  addProductController  = require("../controller/addProductController");
 const multer = require("multer");
 const validateImage = require("../middleware/validateImage.middleware");
 const validateProduct = require("../middleware/validateProduct.middleware");
+const getUrl = require("../middleware/getImageUrl.middleware");
+const imageValidation = require("../middleware/urlValidation.middleware");
 
 
 const storage = multer.memoryStorage();
@@ -17,7 +19,7 @@ const upload = multer({
 });
 
 
-addProduct.post('/addProduct',authGurd,adminGurd,upload.single("image"),validateImage,validateProduct,addProductController,(req,res)=>{
+addProduct.post('/addProduct',authGurd,adminGurd,upload.array("images",10),validateProduct,validateImage,getUrl,imageValidation,addProductController,(req,res)=>{
     res.status(500).send({error:"Server Error"});
 });
 

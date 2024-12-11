@@ -1,0 +1,5 @@
+
+
+
+const getRoute =(req,res) =>{
+}

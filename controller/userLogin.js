@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const userLogin = async (req, res) => {
 
   try {
+    //console.log(req.body);
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
@@ -28,11 +29,11 @@ const userLogin = async (req, res) => {
         lastSearch: ''
       };
 
-      res.status(200).json({ message: 'Login successful', token });
+      return res.status(200).json({ message: 'Login successful', token });
     }
   }
   catch (Error) {
-    res.status(500).send({ "error": "Server error" });
+    return res.status(500).send({ "error": "Server error" });
   }
 
 

@@ -3,12 +3,13 @@ const jwt = require("jsonwebtoken");
 const adminGurd = (req, res, next) => {
     try{
         const user  = req.user;
+
        
         if (user.role === "admin"){
             next();
             return;
         }
-        res.status(401).send({error:"Acess Denied"});
+        res.status(401).send({error:`Acess Denied `});
         return;
 
     }

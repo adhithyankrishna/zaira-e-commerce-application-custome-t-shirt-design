@@ -9,7 +9,7 @@ user.post("/register", validateUser,userRegister,  (req, res) => {});
 
 user.get("/login",validateLoginData,userLogin,(req,res)=>{
    
-    res.send("hai");
+     return res.status(500).send({error:"Server error"})
 });
 
 module.exports = user;

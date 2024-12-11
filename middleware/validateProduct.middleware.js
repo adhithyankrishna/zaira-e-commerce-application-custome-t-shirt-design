@@ -1,13 +1,20 @@
 const Joi = require('joi');
 
-const sizeSchema = Joi.object({
-    size: Joi.string().valid("s","l","m","xl","xxl","xxxl").required().messages({
-        'any.one':"sixe must be valid one ",
-        'string.empty': 'Size is required.'
+const descriptionSchema = Joi.object({
+    key: Joi.string().required().messages({
+        'string.empty': 'Description key is required.'
     }),
-    stock: Joi.number().integer().min(0).required().messages({
-        'number.base': 'Stock must be a valid number.',
-        'number.min': 'Stock cannot be negative.'
+    value: Joi.string().required().messages({
+        'string.empty': 'Description value is required.'
+    })
+});
+
+const optionSchema = Joi.object({
+    optionName: Joi.string().required().messages({
+        'string.empty': 'Option name is required.'
+    }),
+    optionValue: Joi.string().required().messages({
+        'string.empty': 'Option value is required.'
     })
 });
 
@@ -15,56 +22,89 @@ const productValidationSchema = Joi.object({
     name: Joi.string().min(3).max(100).required().messages({
         'string.empty': 'Product name is required.',
         'string.min': 'Product name must be at least 3 characters long.',
-        'string.max': 'Product name cannot exceed 100 characters.'
+        
     }),
-    description: Joi.string().min(10).max(1000).required().messages({
-        'string.empty': 'Product description is required.',
-        'string.min': 'Description must be at least 10 characters long.',
-        'string.max': 'Description cannot exceed 1000 characters.'
+    about: Joi.array().items(Joi.string().required()).min(1).required().messages({
+        'array.min': 'At least one "about" point is required.',
+        'string.empty': '"About" points must be strings.'
     }),
-    sex: Joi.string().valid('Male', 'Female', 'Unisex').required().messages({
-        'any.only': 'Sex must be either Male, Female, or Unisex.'
+    description: Joi.array().items(descriptionSchema).min(1).required().messages({
+        'array.min': 'At least one description entry is required.'
     }),
-    material: Joi.string().required().messages({
-        'string.empty': 'Material type is required.'
+    brand: Joi.string().required().messages({
+        'string.empty': 'Brand is required.'
     }),
-    color: Joi.string().required().messages({
-        'string.empty': 'Color is required.'
+    category: Joi.string().required().messages({
+        'string.empty': 'Category is required.'
     }),
     price: Joi.number().min(0).required().messages({
         'number.base': 'Price must be a valid number.',
         'number.min': 'Price cannot be negative.'
     }),
-    size: Joi.array().items(sizeSchema).min(1).required().messages({
-        'array.min': 'At least one size option is required.'
+    dimensions: Joi.string().required().messages({
+        'string.empty': 'Dimensions are required.'
     }),
-    imageUrl: Joi.array().items(Joi.string().uri().required()).min(1).required().messages({
-        'array.min': 'At least one image URL is required.',
-        'string.uri': 'Image URL must be a valid URI.'
+    options: Joi.array().items(optionSchema).messages({
+        'array.base': 'Options must be an array of objects.'
+    }),
+    stock: Joi.number().integer().min(0).required().messages({
+        'number.base': 'Stock must be a valid number.',
+        'number.min': 'Stock cannot be negative.'
+    }),
+   
+    avgRating: Joi.number().min(0).max(5).default(0).messages({
+        'number.min': 'Average rating cannot be less than 0.',
+        'number.max': 'Average rating cannot exceed 5.'
+    }),
+    totalRatings: Joi.number().integer().min(0).default(0).messages({
+        'number.base': 'Total ratings must be a valid number.',
+        'number.min': 'Total ratings cannot be negative.'
+    }),
+    totalPurchased: Joi.number().integer().min(0).default(0).messages({
+        'number.base': 'Total purchased count must be a valid number.',
+        'number.min': 'Total purchased count cannot be negative.'
     }),
     createdAt: Joi.date().default(Date.now)
 });
 
+const validateProduct = async (req, res, next) => {
+    try {
+        // If `description` or `options` are strings, try to parse as JSON
+        req.body = JSON.parse(JSON.stringify(req.body));
 
-const validateProduct = async (req,res,next)=>{
-    try{
-        await productValidationSchema.validateAsync(req,body,{
-            abortEarly:false
-        })
+        
+
+        try {
+            if (typeof req.body.description === 'string'  || typeof req.body.description === 'object') {
+                
+                req.body.description = JSON.parse(req.body.description);
+                
+                
+                
+            }
+        } catch (parseError) {
+            return res.status(400).json({
+                error: "Validation failed",
+                details: ["Invalid JSON format for description"]
+            });
+        }
+        
+        if (typeof req.body.options === 'string') {
+            req.body.options = JSON.parse(req.body.options);
+        }
+
+        // Validate request body against schema
+        await productValidationSchema.validateAsync(req.body);
+        
+        next(); // Proceed if validation succeeds
+    } catch (error) {
+       
+
+        return res.status(400).json({
+            error: "Validation failed",
+            details: error.details.map(detail => detail.message)
+        });
     }
-    catch(error){
-        return res.status(400).send({
-            error:"Validation failed",
-            details : error.details.map((detail)=>(
-                {
-                    field:detail.path.join("."),
-                    message:detail.message
-                }
-            ))
-        })
-    }
-}
-
-
+};
 
 module.exports = validateProduct;
