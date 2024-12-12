@@ -1,4 +1,5 @@
 const User = require("../model/user.models");
+const createCart  = require("../service/createCart.Service");
 
 const userRegister = (req,res)=>{
     const {name,email,phone,password,role} = req.body;
@@ -20,8 +21,13 @@ const userRegister = (req,res)=>{
         
         newUser.save().then((data)=>{
             if (data){
-                res.status(201).send({msg:"User is Registered",user:userdata});
+                createCart(data.id).then((Data)=>{
+                   return res.status(201).send({msg:"User and  cart is created sucessufully",user:data});
+                }).catch(error=>{
+                  return res.status(201).send({msg:"User is created but cart is not created contact admin to do create",user:data,error})
+                })
             }
+            
         })
       }else{
         res.status(400).send({msg:"User already found"});

@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const session = require("express-session");
 const addProduct = require("./routes/addProduct");
 const search = require("./routes/search");
+const cart = require("./routes/cartCreate");
 const app = express();
 const getProduct = require("./routes/getProduct");
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use(path, user);
 app.use(path,addProduct);
 app.use(path,search);
 app.use(path,getProduct);
+app.use(path,cart);
 
 app.listen(8080, () => {
   console.log(`Server is listening on port 8080`);
