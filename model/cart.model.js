@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 
@@ -12,8 +13,14 @@ const itemSchema = new mongoose.Schema(
             type: String, // Use String for UUIDs
             required: true
         },
+        count: {
+            type: Number, // Correct type for numeric values
+            required: true,
+            default: 1, // Default value is 1
+        },
     },
     {
+        _id: false, // Prevent Mongoose from creating an _id for each item
         timestamps: true, // Automatically manage createdAt and updatedAt
     }
 );
@@ -30,9 +37,7 @@ const cartSchema = new mongoose.Schema(
             required: false, // Items are optional
         },
     },
-    {
-        timestamps: true, // Automatically manage createdAt and updatedAt
-    }
+   
 );
 
 // Create and export the Cart model
